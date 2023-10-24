@@ -1,0 +1,2 @@
+# Configure git to ensure line endings in files you checkout are correct for Windows
+* text=auto
