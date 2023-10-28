@@ -23,8 +23,6 @@ def create_application(application_dependencies_graph: ApplicationDependenciesGr
     api_router.include_router(application_dependencies_graph.clouds_router)
 
     application.include_router(api_router, prefix="/api")
-    # application.include_router(health_router)
-    # application.include_router(clouds_router)
 
     application.add_exception_handler(RequestValidationError, validation_exception_handler)
     return application

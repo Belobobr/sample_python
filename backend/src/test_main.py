@@ -106,8 +106,38 @@ def test_when_user_requests_clouds_without_filters_should_return_whole_list(clie
     )
     
     assert response.status_code == 200
-    # assert is_valid(response.json(), SearchCloudsResponse)
     assert response.json() == SearchCloudsResponse(clouds=clouds).dict()
+    # assert is_valid(response.json(), SearchCloudsResponse)
+
+
+def test_when_user_requests_clouds_with_filter_by_provider_should_return_filtered_list(client_with_fixed_clouds: TestClient, clouds: List[AivenCloud]):
+    response = client_with_fixed_clouds.post(
+        "/api/clouds:search", 
+        json=SearchCloudsRequest(
+            filter=SearchCloudsRequest.Filter(
+                cloud=SearchCloudsRequest.CloudFilter(
+                    provider="upcloud"
+                )
+            )
+        ).dict()
+    )
+    
+    assert response.status_code == 200
+    assert response.json() == SearchCloudsResponse(
+        clouds=[
+            AivenCloud(
+                cloud_description="Asia, Singapore - UpCloud: Singapore",
+                cloud_name="upcloud-sg-sin",
+                geo_latitude=1,
+                geo_longitude=103, 
+                geo_region="asia-pacific", 
+                provider="upcloud",
+                provider_description="UpCloud",
+            ),
+        ]
+    ).dict()
+    # assert is_valid(response.json(), SearchCloudsResponse)
+
 
 def is_valid(json_object: Dict, class_name: type[pydantic.BaseModel]):
     try:
