@@ -1,8 +1,7 @@
 from fastapi import FastAPI, APIRouter
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-from routes.health import create_health_router
-from routes.clouds import creat_clouds_router
+from dependencies import provide_dependencies_graph, ApplicationDependenciesGraph
 from config import get_config, Config
 
 async def validation_exception_handler(request, exc):
@@ -16,15 +15,12 @@ async def validation_exception_handler(request, exc):
 
     return JSONResponse(status_code=422, content={"errors": error_messages})
 
-def create_application(config: Config) -> FastAPI:
-    health_router = create_health_router(config)
-    clouds_router = creat_clouds_router(config)
-
+def create_application(application_dependencies_graph: ApplicationDependenciesGraph) -> FastAPI:
     application = FastAPI()
 
     api_router = APIRouter()
-    api_router.include_router(health_router)
-    api_router.include_router(clouds_router)
+    api_router.include_router(application_dependencies_graph.health_router)
+    api_router.include_router(application_dependencies_graph.clouds_router)
 
     application.include_router(api_router, prefix="/api")
     # application.include_router(health_router)
@@ -36,7 +32,8 @@ def create_application(config: Config) -> FastAPI:
 app = None
 if __name__ == "__main__":
     config = get_config()
-    app = create_application(config)
+    application_dependencies_graph = provide_dependencies_graph(config)
+    app = create_application(application_dependencies_graph)
 
 # app = FastAPI()
 # @app.get("/api/hello")
