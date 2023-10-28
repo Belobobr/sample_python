@@ -32,6 +32,9 @@ class Result(Generic[T]):
         self.status = status
         self.body = body
 
+# TODO
+# add caching (in memory)
+# add circuit breaker
 class ExternalServices:
     def __init__(self):
         pass

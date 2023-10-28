@@ -33,7 +33,6 @@ if __name__ == "__main__":
     application_dependencies_graph = provide_dependencies_graph(config)
     app = create_application(application_dependencies_graph)
 
-# app = FastAPI()
-# @app.get("/api/hello")
-# async def root():
-#     return {"message": "Hello world"}
+# TODO 
+# add observability
+# add json logging
