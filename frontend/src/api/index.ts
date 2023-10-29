@@ -21,7 +21,7 @@ class CloudRequestFilter {
 }
 
 class CloudRequestSort {
-  constructor(public user_geo_latitude?: number, public user_geo_longitude?: number) {}
+  constructor(public user_geo_latitude: number, public user_geo_longitude: number) {}
 }
 
 class SearchCloudsRequest {
@@ -70,4 +70,6 @@ function getApi(config: Config): Api {
   return new Api(config);
 }
 
-export { getApi };
+export {
+  getApi
+}
