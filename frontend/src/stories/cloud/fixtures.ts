@@ -61,6 +61,29 @@ const cloudsAllFields = [
   },
 ];
 
-export { azureCloudAllFields, azureCloudRequiredFields, cloudsAllFields };
+const cloudRequiredFields = [
+  {
+    cloud_name: 'azure-south-africa-north',
+    geo_region: 'africa',
+  },
+  {
+    cloud_name: 'upcloud-sg-sin',
+    geo_region: 'asia-pacific',
+  },
+  {
+    cloud_name: 'google-asia-east2',
+    geo_region: 'asia-pacific',
+  },
+  {
+    cloud_name: 'do-blr',
+    geo_region: 'asia-pacific',
+  },
+  {
+    cloud_name: 'aws-af-south-1',
+    geo_region: 'africa',
+  },
+];
+
+export { azureCloudAllFields, azureCloudRequiredFields, cloudsAllFields, cloudRequiredFields };
 
 

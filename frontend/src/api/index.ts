@@ -1,4 +1,4 @@
-import { Cloud } from '../entities';
+import { Cloud, CloudFilter, CloudSort } from '../entities';
 
 class ApiError {
   constructor(public message: string, public status: number, public more_info?: string) {}
@@ -12,20 +12,8 @@ class Clouds {
 
 // search api
 
-class CloudFilter {
-  constructor(public provider?: string) {}
-}
-
-class CloudRequestFilter {
-  constructor(public cloud?: CloudFilter) {}
-}
-
-class CloudRequestSort {
-  constructor(public user_geo_latitude: number, public user_geo_longitude: number) {}
-}
-
 class SearchCloudsRequest {
-  constructor(public filter?: CloudRequestFilter, public sort?: CloudRequestSort) {}
+  constructor(public filter?: CloudFilter, public sort?: CloudSort) {}
 }
 
 class SearchCloudsResponse extends Clouds {

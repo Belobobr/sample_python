@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { CloudFilter } from '../../components/clouds';
+import { CloudFilter as CloudFilterEntity } from '../../entities'
 
 const meta = {
   title: 'CloudFilter',
@@ -16,7 +17,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    
+    filter: {provider: ''},
   },
 };
 

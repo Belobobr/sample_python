@@ -1,5 +1,4 @@
 // api
-
 interface Cloud {
   cloud_name: string;
   geo_region: string;
@@ -10,8 +9,25 @@ interface Cloud {
   provider_description?: string;
 }
 
-// export {
-//     Cloud,
+// class CloudFilter {
+//   constructor(public provider?: string) {}
 // }
 
-export type { Cloud };
+interface CloudFilter {
+  provider?: string;
+}
+
+// class CloudSort {
+//   constructor(public user_geo_latitude: number, public user_geo_longitude: number) {}
+// }
+
+interface CloudSort {
+  user_geo_latitude?: number;
+  user_geo_longitude?: number;
+}
+
+export type { Cloud, CloudFilter, CloudSort }
+
+// export type { Cloud };
+
+// export { CloudFilter, CloudSort }

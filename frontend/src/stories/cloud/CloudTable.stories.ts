@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { CloudsTable } from '../../components/clouds';
-import { cloudsAllFields } from './fixtures';
+import { cloudsAllFields, cloudRequiredFields } from './fixtures';
 
 const meta = {
   title: 'CloudsTable',
@@ -18,6 +18,13 @@ type Story = StoryObj<typeof meta>;
 export const AllFields: Story = {
   args: {
     clouds: cloudsAllFields,
+  },
+};
+
+
+export const RequiredFields: Story = {
+  args: {
+    clouds: cloudRequiredFields,
   },
 };
 
