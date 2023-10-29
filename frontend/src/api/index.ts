@@ -29,7 +29,7 @@ class Result<T> {
 }
 
 class Config {
-  constructor(public domain: string) {}
+  constructor(public baseUrl: string) {}
 }
 
 class Api {
@@ -40,7 +40,7 @@ class Api {
   // }
 
   public async searchClouds(request: SearchCloudsRequest): Promise<Result<SearchCloudsResponse>> {
-    const url = `${this.config.domain}/api/clouds:search`;
+    const url = `${this.config.baseUrl}/api/clouds:search`;
     const response = await fetch(url, {
       method: 'POST',
       headers: {
@@ -58,6 +58,8 @@ function getApi(config: Config): Api {
   return new Api(config);
 }
 
+const api = getApi({baseUrl: "http://localhost:8080"})
+
 export {
-  getApi
+  api, SearchCloudsRequest, SearchCloudsResponse, Clouds, ApiError
 }

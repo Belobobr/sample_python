@@ -21,6 +21,7 @@ export const Default: Story = {
     clouds: cloudsAllFields,
     filter: {},
     sort: {},
+    loading: false,
   },
 };
 
@@ -29,8 +30,18 @@ export const All: Story = {
     clouds: cloudsAllFields,
     filter: { provider: 'aws' },
     sort: { user_geo_latitude: 0, user_geo_longitude: 0 },
+    loading: false
   },
 };
+
+export const ContentLoading: Story = {
+  args: {
+    clouds: cloudsAllFields,
+    filter: { provider: 'aws' },
+    sort: { user_geo_latitude: 0, user_geo_longitude: 0 },
+    loading: true
+  },
+}
 
 
 

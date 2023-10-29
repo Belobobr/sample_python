@@ -5,6 +5,7 @@
 
 import { useState } from 'react';
 import { Cloud, CloudFilter as CloudFilterEntity, CloudSort as CloudSortEntity} from '../../entities';
+import { searchClouds, ServiceErrors, hasServiceErrors } from '../../interactions';
 
 function CloudRow({ cloud }: { cloud: Cloud }) {
   const { cloud_name, geo_region, cloud_description, geo_latitude, geo_longitude, provider, provider_description } = cloud;
@@ -93,12 +94,13 @@ function CloudSort(
 }
 
 function CloudSortAndFilter(
-  { filter, sort, onFilterChange, onSortChange }: 
+  { filter, sort, onFilterChange, onSortChange, onSearchPress }: 
   { 
     filter: CloudFilterEntity, 
     sort: CloudSortEntity, 
     onSortChange: (sort: CloudSortEntity) => void, 
-    onFilterChange: (filter: CloudFilterEntity) => void 
+    onFilterChange: (filter: CloudFilterEntity) => void,
+    onSearchPress: () => void
   }
 ) {
   return (
@@ -115,21 +117,25 @@ function CloudSortAndFilter(
           <CloudSort sort={sort} onSortChange={onSortChange}/>
         </div>
       </div>
-      <input type="submit" value="Submit" />
+      <input type="submit" value="Search" onSubmit={onSearchPress}/>
     </form>
   );
 }
 
 function FilterableAndSortableCloudTable(
-  { clouds, filter, sort, onFilterChange, onSortChange}: 
+  { clouds, filter, sort, onFilterChange, onSortChange, onSearchPress, loading}: 
   { 
     clouds: Cloud[], 
     filter: CloudFilterEntity, 
     sort: CloudSortEntity, 
     onSortChange: (sort: CloudSortEntity) => void, 
-    onFilterChange: (filter: CloudFilterEntity) => void  
+    onFilterChange: (filter: CloudFilterEntity) => void,
+    onSearchPress: () => void,
+    loading: boolean
   }
 ) {
+
+  const content = loading ? <div>Loading...</div> : <CloudsTable clouds={clouds} />;
 
   return (
     <div>
@@ -138,8 +144,9 @@ function FilterableAndSortableCloudTable(
         sort={sort} 
         onFilterChange={onFilterChange} 
         onSortChange={onSortChange}
+        onSearchPress={onSearchPress}
       />
-      <CloudsTable clouds={clouds} />
+      {content}
     </div>
   );
 }
@@ -147,18 +154,30 @@ function FilterableAndSortableCloudTable(
 function FilterableAndSortableCloudTableContainer() {
   const [filter, setFilter] = useState<CloudFilterEntity>({});
   const [sort, setSort] = useState<CloudSortEntity>({});
+  const [loading, setLoading] = useState<boolean>(false);
+  const [clouds, setClouds] = useState<Cloud[]>([]);
+  const [errors, setErrors] = useState<ServiceErrors>({});
 
   return (
     <FilterableAndSortableCloudTable
-      clouds={[]}
       filter={filter}
       sort={sort}
       onFilterChange={setFilter}
       onSortChange={setSort}
+      onSearchPress={async () => {
+        setLoading(true);
+        let { errors, clouds } = await searchClouds({ filter, sort });
+        if (hasServiceErrors(errors)) {
+          setErrors(errors);
+        } else {
+          setClouds(clouds);
+        }
+        setLoading(false);
+      }}
+      clouds={clouds}
+      loading={loading}
     />
   );
 }
-
-
 
 export { CloudRow, CloudsTable, CloudFilter, CloudSort, FilterableAndSortableCloudTable };
