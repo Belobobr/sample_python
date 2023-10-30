@@ -19,7 +19,7 @@ class SearchCloudsRequestBody implements SearchCloudRequest {
   constructor(public filter?: CloudFilter, public sort?: CloudSort) {}
 }
 class SearchCloudsResponseBody extends Clouds implements CommonResponseBody {
-  constructor(public clouds: Cloud[], public errors: ResponseBodyError[], public message: string) {
+  constructor(public clouds: Cloud[], public errors?: ResponseBodyError[], public message?: string) {
     super(clouds, errors, message);
   }
 }
@@ -38,6 +38,6 @@ async function searchCloudsRequest(
   return makePostRequest(baseUrl, 'api/clouds:search', request);
 }
 
-export { searchClouds };
+export { searchClouds, SearchCloudsResponseBody, SearchCloudsRequestBody };
 
 export type { SearchCloudsResult, SearchCloudRequest };
