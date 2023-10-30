@@ -17,7 +17,7 @@ function getApi(config: Config): Api {
   return new Api(config);
 }
 
-const api = getApi({ baseUrl: 'http://localhost:8080' });
+const api = getApi({ baseUrl: process.env.REACT_APP_API_BASE_URL || '' });
 
 export { api, hasApiErrors };
 

@@ -1,7 +1,6 @@
-// import { useState } from 'react';
+import { useState } from 'react';
 import { Cloud, CloudFilter as CloudFilterEntity, CloudSort as CloudSortEntity } from '../../entities';
-import { ApiErrors, hasApiErrors } from '../../api';
-// import { api, ApiErrors, hasApiErrors } from '../../api';
+import { api, ApiErrors, hasApiErrors } from '../../api';
 
 function CloudRow({ cloud }: { cloud: Cloud }) {
   const { cloud_name, geo_region, cloud_description, geo_latitude, geo_longitude, provider, provider_description } =
@@ -24,7 +23,7 @@ function CloudsTable({ clouds }: { clouds: Cloud[] }) {
   const rows = clouds.map((cloud) => <CloudRow cloud={cloud} key={cloud.cloud_name} />);
 
   return (
-    <table>
+    <table data-testid={'searchContent'}>
       <thead>
         <tr>
           <th>Cloud name</th>
@@ -57,6 +56,7 @@ function CloudFilter({
           placeholder=""
           value={filter.provider}
           onChange={(e) => onFilterChange({ ...filter, provider: e.target.value })}
+          data-testid={'filterProviderInput'}
         />
       </label>
     </>
@@ -75,6 +75,7 @@ function CloudSort({ sort, onSortChange }: { sort: CloudSortEntity; onSortChange
           onChange={(e) => {
             onSortChange({ ...sort, user_geo_latitude: parseFloat(e.target.value) });
           }}
+          data-testid={'sortUserGeoLatitudeInput'}
         />
       </label>
       <label>
@@ -86,6 +87,7 @@ function CloudSort({ sort, onSortChange }: { sort: CloudSortEntity; onSortChange
           onChange={(e) => {
             onSortChange({ ...sort, user_geo_longitude: parseFloat(e.target.value) });
           }}
+          data-testid={'sortUserGeoLongitudeInput'}
         />
       </label>
     </>
@@ -106,7 +108,12 @@ function CloudSortAndFilter({
   onSearchPress: () => void;
 }) {
   return (
-    <form>
+    <form
+      onSubmit={(e: React.SyntheticEvent) => {
+        e.preventDefault();
+        onSearchPress();
+      }}
+    >
       <div>
         Filter:
         <div>
@@ -119,17 +126,17 @@ function CloudSortAndFilter({
           <CloudSort sort={sort} onSortChange={onSortChange} />
         </div>
       </div>
-      <input type="submit" value="Search" onSubmit={onSearchPress} />
+      <input type="submit" value="Search" data-testid={'searchButton'} />
     </form>
   );
 }
 
 function Loader() {
-  return <div>Loading...</div>;
+  return <div data-testid={'searchLoader'}>Loading...</div>;
 }
 
 function Errors({ errors }: { errors: ApiErrors }) {
-  return <div>Errors: {JSON.stringify(errors)}</div>;
+  return <div data-testid={'searchError'}>Errors: {JSON.stringify(errors)}</div>;
 }
 
 function FilterableAndSortableCloudTable({
@@ -174,36 +181,50 @@ function FilterableAndSortableCloudTable({
   );
 }
 
-// function FilterableAndSortableCloudTableContainer() {
-//   const [filter, setFilter] = useState<CloudFilterEntity>({});
-//   const [sort, setSort] = useState<CloudSortEntity>({});
+function FilterableAndSortableCloudTableContainer() {
+  const [filter, setFilter] = useState<CloudFilterEntity>({
+    provider: '',
+  });
+  const [sort, setSort] = useState<CloudSortEntity>({
+    // user_geo_latitude: 0,
+    // user_geo_longitude: 0,
+  });
 
-//   //TODO useReducer if it's easier to understand
-//   const [loading, setLoading] = useState<boolean>(false);
-//   const [clouds, setClouds] = useState<Cloud[]>([]);
-//   const [errors, setErrors] = useState<ApiErrors>({});
+  //TODO useReducer if it's easier to understand
+  const [loading, setLoading] = useState<boolean>(false);
+  const [clouds, setClouds] = useState<Cloud[]>([]);
+  const [errors, setErrors] = useState<ApiErrors>({});
 
-//   return (
-//     <FilterableAndSortableCloudTable
-//       filter={filter}
-//       sort={sort}
-//       onFilterChange={setFilter}
-//       onSortChange={setSort}
-//       onSearchPress={() => {
-//         //TODO check hot we should implement this
-//         void (async () => {
-//           setLoading(true);
-//           const { errors, result: clouds } = await api.searchClouds({ filter, sort });
-//           setErrors(errors);
-//           setClouds(clouds);
-//           setLoading(false);
-//         })();
-//       }}
-//       clouds={clouds}
-//       loading={loading}
-//       errors={errors}
-//     />
-//   );
-// }
+  const searchClouds = async () => {
+    setLoading(true);
+    const { errors, result: clouds } = await api.searchClouds({ filter, sort });
+    setErrors(errors);
+    setClouds(clouds);
+    setLoading(false);
+  };
 
-export { CloudRow, CloudsTable, CloudFilter, CloudSort, FilterableAndSortableCloudTable, Errors };
+  return (
+    <FilterableAndSortableCloudTable
+      filter={filter}
+      sort={sort}
+      onFilterChange={setFilter}
+      onSortChange={setSort}
+      onSearchPress={() => {
+        // void searchClouds();
+      }}
+      clouds={clouds}
+      loading={loading}
+      errors={errors}
+    />
+  );
+}
+
+export {
+  CloudRow,
+  CloudsTable,
+  CloudFilter,
+  CloudSort,
+  FilterableAndSortableCloudTable,
+  FilterableAndSortableCloudTableContainer,
+  Errors,
+};

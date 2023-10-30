@@ -10,6 +10,9 @@ const meta = {
     layout: 'centered',
   },
   tags: ['autodocs'],
+  argTypes: {
+    onSearchPress: { action: true },
+  },
 } satisfies Meta<typeof FilterableAndSortableCloudTable>;
 
 export default meta;
