@@ -5,7 +5,7 @@
 
 import { useState } from 'react';
 import { Cloud, CloudFilter as CloudFilterEntity, CloudSort as CloudSortEntity} from '../../entities';
-import { searchClouds, ServiceErrors, hasServiceErrors } from '../../api/clouds';
+import { api, ApiErrors, hasApiErrors, SearchCloudRequest, SearchCloudsResult } from '../../api';
 
 function CloudRow({ cloud }: { cloud: Cloud }) {
   const { cloud_name, geo_region, cloud_description, geo_latitude, geo_longitude, provider, provider_description } = cloud;
@@ -122,8 +122,16 @@ function CloudSortAndFilter(
   );
 }
 
+function Loader() {
+  return <div>Loading...</div>;
+}
+
+function Errors({ errors }: { errors: ApiErrors }) {
+  return <div>Errors: {JSON.stringify(errors)}</div>;
+}
+
 function FilterableAndSortableCloudTable(
-  { clouds, filter, sort, onFilterChange, onSortChange, onSearchPress, loading}: 
+  { clouds, filter, sort, onFilterChange, onSortChange, onSearchPress, loading, errors}: 
   { 
     clouds: Cloud[], 
     filter: CloudFilterEntity, 
@@ -131,11 +139,20 @@ function FilterableAndSortableCloudTable(
     onSortChange: (sort: CloudSortEntity) => void, 
     onFilterChange: (filter: CloudFilterEntity) => void,
     onSearchPress: () => void,
-    loading: boolean
+    loading: boolean,
+    errors: ApiErrors
   }
 ) {
 
-  const content = loading ? <div>Loading...</div> : <CloudsTable clouds={clouds} />;
+
+  let content = null;
+  if (loading) {
+    content = <Loader />;
+  } else if (hasApiErrors(errors)) {
+    content = <Errors errors={errors} />;
+  } else {
+    content = <CloudsTable clouds={clouds} />;
+  }
 
   return (
     <div>
@@ -154,9 +171,11 @@ function FilterableAndSortableCloudTable(
 function FilterableAndSortableCloudTableContainer() {
   const [filter, setFilter] = useState<CloudFilterEntity>({});
   const [sort, setSort] = useState<CloudSortEntity>({});
+
+  //TODO useReducer if it's easier to understand
   const [loading, setLoading] = useState<boolean>(false);
   const [clouds, setClouds] = useState<Cloud[]>([]);
-  const [errors, setErrors] = useState<ServiceErrors>({});
+  const [errors, setErrors] = useState<ApiErrors>({});
 
   return (
     <FilterableAndSortableCloudTable
@@ -166,16 +185,14 @@ function FilterableAndSortableCloudTableContainer() {
       onSortChange={setSort}
       onSearchPress={async () => {
         setLoading(true);
-        let { errors, clouds } = await searchClouds({ filter, sort });
-        if (hasServiceErrors(errors)) {
-          setErrors(errors);
-        } else {
-          setClouds(clouds);
-        }
+        let { errors, result: clouds } = await api.searchClouds({ filter, sort });
+        setErrors(errors);
+        setClouds(clouds);
         setLoading(false);
       }}
       clouds={clouds}
       loading={loading}
+      errors={errors}
     />
   );
 }
