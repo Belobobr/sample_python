@@ -1,10 +1,6 @@
-import {
-  SearchCloudsResult, SearchCloudRequest, searchClouds
-} from "./clouds"
+import { SearchCloudsResult, SearchCloudRequest, searchClouds } from './clouds';
 
-import {
-  ApiErrors, hasApiErrors, 
-} from "./errors"
+import { ApiErrors, hasApiErrors } from './errors';
 
 class Config {
   constructor(public baseUrl: string) {}
@@ -21,12 +17,8 @@ function getApi(config: Config): Api {
   return new Api(config);
 }
 
-const api = getApi({baseUrl: "http://localhost:8080"})
+const api = getApi({ baseUrl: 'http://localhost:8080' });
 
-export {
-  api, hasApiErrors
-}
+export { api, hasApiErrors };
 
-export type {
-  ApiErrors, SearchCloudRequest, SearchCloudsResult
-}
+export type { ApiErrors, SearchCloudRequest, SearchCloudsResult };

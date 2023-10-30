@@ -27,18 +27,17 @@ class SearchCloudsResponseBody extends Clouds implements CommonResponseBody {
 async function searchClouds(baseUrl: string, request: SearchCloudsRequestBody): Promise<SearchCloudsResult> {
   return makeRequestWithErrorsHandling<SearchCloudsResponseBody, Cloud[]>(
     () => searchCloudsRequest(baseUrl, request),
-    (responseBody) => responseBody.clouds
+    (responseBody) => responseBody.clouds,
   );
 }
 
-async function searchCloudsRequest(baseUrl: string, request: SearchCloudsRequestBody): Promise<ServerResponse<SearchCloudsResponseBody>> {
-  return makePostRequest(baseUrl, 'api/clouds:search', request)
+async function searchCloudsRequest(
+  baseUrl: string,
+  request: SearchCloudsRequestBody,
+): Promise<ServerResponse<SearchCloudsResponseBody>> {
+  return makePostRequest(baseUrl, 'api/clouds:search', request);
 }
 
-export {
-  searchClouds
-}
+export { searchClouds };
 
-export type {
-  SearchCloudsResult, SearchCloudRequest
-}
+export type { SearchCloudsResult, SearchCloudRequest };

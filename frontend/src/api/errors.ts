@@ -1,57 +1,56 @@
-// 
-import { ServerResponse, CommonResponseBody, ResponseBodyError } from "./server";
+//
+import { ServerResponse, CommonResponseBody, ResponseBodyError } from './server';
 
 interface ApiErrors {
-    serverErrors?: ResponseBodyError[]
-    statusError?: number
-    clientError?: string
-  }
-  
+  serverErrors?: ResponseBodyError[];
+  statusError?: number;
+  clientError?: string;
+}
+
 interface ApiResult<Result> {
-    result: Result;
-    errors: ApiErrors;
+  result: Result;
+  errors: ApiErrors;
 }
 
 async function makeRequestWithErrorsHandling<ResponseBody extends CommonResponseBody, Result>(
-    makeRequest: () => Promise<ServerResponse<ResponseBody>>,
-    getResult: (responseBody: ResponseBody) => Result,
+  makeRequest: () => Promise<ServerResponse<ResponseBody>>,
+  getResult: (responseBody: ResponseBody) => Result,
 ): Promise<ApiResult<Result>> {
-    let errors: ApiErrors = {}
-    let result: Result = {} as Result;
+  const errors: ApiErrors = {};
+  let result: Result = {} as Result;
 
-    try {
-        let response = await makeRequest();
+  try {
+    const response = await makeRequest();
 
-        if (response.body.errors) {  
-        errors.serverErrors = response.body.errors;
-        }
-        
-        if (response.status === 200) {
-            result = getResult(response.body)
-        } else {
-            errors.statusError = response.status
-        }
-
-    } catch (e: any) {
-        errors.clientError = e.message;
+    if (response.body.errors) {
+      errors.serverErrors = response.body.errors;
     }
 
-    return {
-        errors,
-        result
+    if (response.status === 200) {
+      result = getResult(response.body);
+    } else {
+      errors.statusError = response.status;
     }
+  } catch (e) {
+    errors.clientError = getErrorMessage(e);
+  }
+
+  return {
+    errors,
+    result,
+  };
 }
 
 function hasApiErrors(serviceErrors: ApiErrors): boolean {
-    return Object.keys(serviceErrors).length > 0;
+  return Object.keys(serviceErrors).length > 0;
 }
 
-export {
-    makeRequestWithErrorsHandling,
-    hasApiErrors
-}
+export { makeRequestWithErrorsHandling, hasApiErrors };
 
-export type {
-    ApiResult,
-    ApiErrors
+export type { ApiResult, ApiErrors };
+
+//TODO all catch should use this
+function getErrorMessage(error: unknown) {
+  if (error instanceof Error) return error.message;
+  return String(error);
 }

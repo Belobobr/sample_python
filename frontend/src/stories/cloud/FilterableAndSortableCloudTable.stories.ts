@@ -1,8 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { CloudFilter, FilterableAndSortableCloudTable } from '../../components/clouds';
+import { FilterableAndSortableCloudTable } from '../../components/clouds';
 import { cloudsAllFields } from './fixtures';
-import { CloudFilter as CloudFilterEntity, CloudSort as CloudSortEntity } from '../../entities'
 
 const meta = {
   title: 'FilterableAndSortableCloudTable',
@@ -30,7 +29,7 @@ export const All: Story = {
     clouds: cloudsAllFields,
     filter: { provider: 'aws' },
     sort: { user_geo_latitude: 0, user_geo_longitude: 0 },
-    loading: false
+    loading: false,
   },
 };
 
@@ -39,10 +38,6 @@ export const ContentLoading: Story = {
     clouds: cloudsAllFields,
     filter: { provider: 'aws' },
     sort: { user_geo_latitude: 0, user_geo_longitude: 0 },
-    loading: true
+    loading: true,
   },
-}
-
-
-
-
+};

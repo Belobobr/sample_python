@@ -1,4 +1,3 @@
-
 class ServerResponse<T> {
   constructor(public body: T, public status: number) {}
 }
@@ -13,10 +12,12 @@ class ResponseBodyError {
 }
 
 async function makePostRequest<RequestBody, ResponseBody>(
-  baseUrl: string, path: string, body: RequestBody
+  baseUrl: string,
+  path: string,
+  body: RequestBody,
 ): Promise<ServerResponse<ResponseBody>> {
   const url = `${baseUrl}/${path}`;
-  
+
   const response = await fetch(url, {
     method: 'POST',
     headers: {
@@ -29,10 +30,6 @@ async function makePostRequest<RequestBody, ResponseBody>(
   return new ServerResponse(responseBody, status);
 }
 
-export {
-  ServerResponse, ResponseBodyError, makePostRequest
-}
+export { ServerResponse, ResponseBodyError, makePostRequest };
 
-export type {
-  CommonResponseBody
-}
+export type { CommonResponseBody };

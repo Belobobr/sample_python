@@ -1,14 +1,10 @@
-// FilterableAndSortableCloudTable
-// CloudFilter / CloudSort
-// CloudTable
-// CloudRow
-
 import { useState } from 'react';
-import { Cloud, CloudFilter as CloudFilterEntity, CloudSort as CloudSortEntity} from '../../entities';
-import { api, ApiErrors, hasApiErrors, SearchCloudRequest, SearchCloudsResult } from '../../api';
+import { Cloud, CloudFilter as CloudFilterEntity, CloudSort as CloudSortEntity } from '../../entities';
+import { api, ApiErrors, hasApiErrors } from '../../api';
 
 function CloudRow({ cloud }: { cloud: Cloud }) {
-  const { cloud_name, geo_region, cloud_description, geo_latitude, geo_longitude, provider, provider_description } = cloud;
+  const { cloud_name, geo_region, cloud_description, geo_latitude, geo_longitude, provider, provider_description } =
+    cloud;
 
   return (
     <tr>
@@ -44,17 +40,21 @@ function CloudsTable({ clouds }: { clouds: Cloud[] }) {
   );
 }
 
-function CloudFilter(
-  { filter, onFilterChange }: { filter: CloudFilterEntity, onFilterChange: (filter: CloudFilterEntity) => void }
-) {
+function CloudFilter({
+  filter,
+  onFilterChange,
+}: {
+  filter: CloudFilterEntity;
+  onFilterChange: (filter: CloudFilterEntity) => void;
+}) {
   return (
     <>
       <label>
         Provider:
-        <input 
-          type="text" 
-          placeholder="" 
-          value={filter.provider} 
+        <input
+          type="text"
+          placeholder=""
+          value={filter.provider}
           onChange={(e) => onFilterChange({ ...filter, provider: e.target.value })}
         />
       </label>
@@ -62,30 +62,28 @@ function CloudFilter(
   );
 }
 
-function CloudSort(
-  { sort, onSortChange }: { sort: CloudSortEntity, onSortChange: (sort: CloudSortEntity) => void}
-) {
+function CloudSort({ sort, onSortChange }: { sort: CloudSortEntity; onSortChange: (sort: CloudSortEntity) => void }) {
   return (
     <>
       <label>
         User geo latitude:
-        <input 
-          type="text" 
-          placeholder="" 
+        <input
+          type="text"
+          placeholder=""
           value={sort.user_geo_latitude}
           onChange={(e) => {
-            onSortChange({...sort, user_geo_latitude: parseFloat(e.target.value)})
+            onSortChange({ ...sort, user_geo_latitude: parseFloat(e.target.value) });
           }}
         />
       </label>
       <label>
         User geo longitude:
-        <input 
+        <input
           type="text"
-          placeholder="" 
+          placeholder=""
           value={sort.user_geo_longitude}
           onChange={(e) => {
-            onSortChange({...sort, user_geo_longitude: parseFloat(e.target.value)})
+            onSortChange({ ...sort, user_geo_longitude: parseFloat(e.target.value) });
           }}
         />
       </label>
@@ -93,31 +91,34 @@ function CloudSort(
   );
 }
 
-function CloudSortAndFilter(
-  { filter, sort, onFilterChange, onSortChange, onSearchPress }: 
-  { 
-    filter: CloudFilterEntity, 
-    sort: CloudSortEntity, 
-    onSortChange: (sort: CloudSortEntity) => void, 
-    onFilterChange: (filter: CloudFilterEntity) => void,
-    onSearchPress: () => void
-  }
-) {
+function CloudSortAndFilter({
+  filter,
+  sort,
+  onFilterChange,
+  onSortChange,
+  onSearchPress,
+}: {
+  filter: CloudFilterEntity;
+  sort: CloudSortEntity;
+  onSortChange: (sort: CloudSortEntity) => void;
+  onFilterChange: (filter: CloudFilterEntity) => void;
+  onSearchPress: () => void;
+}) {
   return (
     <form>
       <div>
         Filter:
         <div>
-          <CloudFilter filter={filter} onFilterChange={onFilterChange}/>
+          <CloudFilter filter={filter} onFilterChange={onFilterChange} />
         </div>
       </div>
       <div>
         Sort:
         <div>
-          <CloudSort sort={sort} onSortChange={onSortChange}/>
+          <CloudSort sort={sort} onSortChange={onSortChange} />
         </div>
       </div>
-      <input type="submit" value="Search" onSubmit={onSearchPress}/>
+      <input type="submit" value="Search" onSubmit={onSearchPress} />
     </form>
   );
 }
@@ -130,21 +131,25 @@ function Errors({ errors }: { errors: ApiErrors }) {
   return <div>Errors: {JSON.stringify(errors)}</div>;
 }
 
-function FilterableAndSortableCloudTable(
-  { clouds, filter, sort, onFilterChange, onSortChange, onSearchPress, loading, errors}: 
-  { 
-    clouds: Cloud[], 
-    filter: CloudFilterEntity, 
-    sort: CloudSortEntity, 
-    onSortChange: (sort: CloudSortEntity) => void, 
-    onFilterChange: (filter: CloudFilterEntity) => void,
-    onSearchPress: () => void,
-    loading: boolean,
-    errors: ApiErrors
-  }
-) {
-
-
+function FilterableAndSortableCloudTable({
+  clouds,
+  filter,
+  sort,
+  onFilterChange,
+  onSortChange,
+  onSearchPress,
+  loading,
+  errors,
+}: {
+  clouds: Cloud[];
+  filter: CloudFilterEntity;
+  sort: CloudSortEntity;
+  onSortChange: (sort: CloudSortEntity) => void;
+  onFilterChange: (filter: CloudFilterEntity) => void;
+  onSearchPress: () => void;
+  loading: boolean;
+  errors: ApiErrors;
+}) {
   let content = null;
   if (loading) {
     content = <Loader />;
@@ -156,10 +161,10 @@ function FilterableAndSortableCloudTable(
 
   return (
     <div>
-      <CloudSortAndFilter 
-        filter={filter} 
-        sort={sort} 
-        onFilterChange={onFilterChange} 
+      <CloudSortAndFilter
+        filter={filter}
+        sort={sort}
+        onFilterChange={onFilterChange}
         onSortChange={onSortChange}
         onSearchPress={onSearchPress}
       />
@@ -183,12 +188,15 @@ function FilterableAndSortableCloudTableContainer() {
       sort={sort}
       onFilterChange={setFilter}
       onSortChange={setSort}
-      onSearchPress={async () => {
-        setLoading(true);
-        let { errors, result: clouds } = await api.searchClouds({ filter, sort });
-        setErrors(errors);
-        setClouds(clouds);
-        setLoading(false);
+      onSearchPress={() => {
+        //TODO check hot we should implement this
+        void (async () => {
+          setLoading(true);
+          const { errors, result: clouds } = await api.searchClouds({ filter, sort });
+          setErrors(errors);
+          setClouds(clouds);
+          setLoading(false);
+        })();
       }}
       clouds={clouds}
       loading={loading}

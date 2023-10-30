@@ -26,7 +26,7 @@ interface CloudSort {
   user_geo_longitude?: number;
 }
 
-export type { Cloud, CloudFilter, CloudSort }
+export type { Cloud, CloudFilter, CloudSort };
 
 // export type { Cloud };
 

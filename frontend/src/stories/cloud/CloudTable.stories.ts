@@ -21,11 +21,8 @@ export const AllFields: Story = {
   },
 };
 
-
 export const RequiredFields: Story = {
   args: {
     clouds: cloudRequiredFields,
   },
 };
-
-

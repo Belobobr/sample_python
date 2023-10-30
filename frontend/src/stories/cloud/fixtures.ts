@@ -85,5 +85,3 @@ const cloudRequiredFields = [
 ];
 
 export { azureCloudAllFields, azureCloudRequiredFields, cloudsAllFields, cloudRequiredFields };
-
-
