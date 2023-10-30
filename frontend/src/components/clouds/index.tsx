@@ -1,6 +1,7 @@
-import { useState } from 'react';
+// import { useState } from 'react';
 import { Cloud, CloudFilter as CloudFilterEntity, CloudSort as CloudSortEntity } from '../../entities';
-import { api, ApiErrors, hasApiErrors } from '../../api';
+import { ApiErrors, hasApiErrors } from '../../api';
+// import { api, ApiErrors, hasApiErrors } from '../../api';
 
 function CloudRow({ cloud }: { cloud: Cloud }) {
   const { cloud_name, geo_region, cloud_description, geo_latitude, geo_longitude, provider, provider_description } =
@@ -173,36 +174,36 @@ function FilterableAndSortableCloudTable({
   );
 }
 
-function FilterableAndSortableCloudTableContainer() {
-  const [filter, setFilter] = useState<CloudFilterEntity>({});
-  const [sort, setSort] = useState<CloudSortEntity>({});
+// function FilterableAndSortableCloudTableContainer() {
+//   const [filter, setFilter] = useState<CloudFilterEntity>({});
+//   const [sort, setSort] = useState<CloudSortEntity>({});
 
-  //TODO useReducer if it's easier to understand
-  const [loading, setLoading] = useState<boolean>(false);
-  const [clouds, setClouds] = useState<Cloud[]>([]);
-  const [errors, setErrors] = useState<ApiErrors>({});
+//   //TODO useReducer if it's easier to understand
+//   const [loading, setLoading] = useState<boolean>(false);
+//   const [clouds, setClouds] = useState<Cloud[]>([]);
+//   const [errors, setErrors] = useState<ApiErrors>({});
 
-  return (
-    <FilterableAndSortableCloudTable
-      filter={filter}
-      sort={sort}
-      onFilterChange={setFilter}
-      onSortChange={setSort}
-      onSearchPress={() => {
-        //TODO check hot we should implement this
-        void (async () => {
-          setLoading(true);
-          const { errors, result: clouds } = await api.searchClouds({ filter, sort });
-          setErrors(errors);
-          setClouds(clouds);
-          setLoading(false);
-        })();
-      }}
-      clouds={clouds}
-      loading={loading}
-      errors={errors}
-    />
-  );
-}
+//   return (
+//     <FilterableAndSortableCloudTable
+//       filter={filter}
+//       sort={sort}
+//       onFilterChange={setFilter}
+//       onSortChange={setSort}
+//       onSearchPress={() => {
+//         //TODO check hot we should implement this
+//         void (async () => {
+//           setLoading(true);
+//           const { errors, result: clouds } = await api.searchClouds({ filter, sort });
+//           setErrors(errors);
+//           setClouds(clouds);
+//           setLoading(false);
+//         })();
+//       }}
+//       clouds={clouds}
+//       loading={loading}
+//       errors={errors}
+//     />
+//   );
+// }
 
-export { CloudRow, CloudsTable, CloudFilter, CloudSort, FilterableAndSortableCloudTable };
+export { CloudRow, CloudsTable, CloudFilter, CloudSort, FilterableAndSortableCloudTable, Errors };
