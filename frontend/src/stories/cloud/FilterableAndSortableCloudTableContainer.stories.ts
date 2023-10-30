@@ -27,6 +27,7 @@ export const Default: Story = {
   },
 };
 
+// TODO check how to reuse steps
 export const SearchSuccess: Story = {
   play: async ({ args, canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -42,9 +43,10 @@ export const SearchSuccess: Story = {
 
     await step('Search', async () => {
       await userEvent.click(canvas.getByTestId('searchButton'));
+      await waitFor(() => expect(canvas.getByTestId('searchLoader')).toBeInTheDocument());
     });
 
-    // await waitFor(() => expect(canvas.getByTestId('searchContent')).toHaveTextContent(''));
+    await waitFor(() => expect(canvas.getByTestId('searchContent')).toBeInTheDocument());
   },
 };
 
@@ -63,8 +65,9 @@ export const SearchFailure: Story = {
 
     await step('Search', async () => {
       await userEvent.click(canvas.getByTestId('searchButton'));
+      await waitFor(() => expect(canvas.getByTestId('searchLoader')).toBeInTheDocument());
     });
 
-    // await waitFor(() => expect(canvas.getByTestId('searchError')).toHaveTextContent(''));
+    await waitFor(() => expect(canvas.getByTestId('searchError')).toBeInTheDocument());
   },
 };

@@ -210,7 +210,7 @@ function FilterableAndSortableCloudTableContainer() {
       onFilterChange={setFilter}
       onSortChange={setSort}
       onSearchPress={() => {
-        // void searchClouds();
+        void searchClouds();
       }}
       clouds={clouds}
       loading={loading}
