@@ -1,28 +1,8 @@
-import { Cloud, CloudFilter, CloudSort } from '../entities';
+import { SearchCloudsRequest, SearchCloudsResponseBody } from './clouds'
 
-class ApiError {
+class ServerApiError {
   constructor(public message: string, public status: number, public more_info?: string) {}
 }
-
-// cloud
-
-class Clouds {
-  constructor(public clouds: Cloud[], public errors?: ApiError[], public message?: string) {}
-}
-
-// search api
-
-class SearchCloudsRequest {
-  constructor(public filter?: CloudFilter, public sort?: CloudSort) {}
-}
-
-class SearchCloudsResponse extends Clouds {
-  constructor(public clouds: Cloud[], public errors: ApiError[], public message: string) {
-    super(clouds, errors, message);
-  }
-}
-
-// api implementation
 
 class Result<T> {
   constructor(public body: T, public status: number) {}
@@ -35,11 +15,7 @@ class Config {
 class Api {
   constructor(public config: Config) {}
 
-  // public getDomain(): string {
-  //     return this.config.domain;
-  // }
-
-  public async searchClouds(request: SearchCloudsRequest): Promise<Result<SearchCloudsResponse>> {
+  public async searchClouds(request: SearchCloudsRequest): Promise<Result<SearchCloudsResponseBody>> {
     const url = `${this.config.baseUrl}/api/clouds:search`;
     const response = await fetch(url, {
       method: 'POST',
@@ -48,7 +24,7 @@ class Api {
       },
       body: JSON.stringify(request),
     });
-    const body = (await response.json()) as SearchCloudsResponse;
+    const body = (await response.json()) as SearchCloudsResponseBody;
     const status = response.status;
     return new Result(body, status);
   }
@@ -61,5 +37,5 @@ function getApi(config: Config): Api {
 const api = getApi({baseUrl: "http://localhost:8080"})
 
 export {
-  api, SearchCloudsRequest, SearchCloudsResponse, Clouds, ApiError
+  api, SearchCloudsRequest, SearchCloudsResponseBody as SearchCloudsResponse, ServerApiError
 }

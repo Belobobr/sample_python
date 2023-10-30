@@ -5,7 +5,7 @@
 
 import { useState } from 'react';
 import { Cloud, CloudFilter as CloudFilterEntity, CloudSort as CloudSortEntity} from '../../entities';
-import { searchClouds, ServiceErrors, hasServiceErrors } from '../../interactions';
+import { searchClouds, ServiceErrors, hasServiceErrors } from '../../api/clouds';
 
 function CloudRow({ cloud }: { cloud: Cloud }) {
   const { cloud_name, geo_region, cloud_description, geo_latitude, geo_longitude, provider, provider_description } = cloud;
