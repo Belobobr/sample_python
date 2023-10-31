@@ -3,6 +3,7 @@ import json
 from typing import TypeVar, Generic, List, Optional
 # from pydantic.dataclasses import dataclass
 from pydantic import BaseModel
+from geo.geo import Point
 
 # @dataclass
 class AivenCloud(BaseModel):
@@ -13,6 +14,12 @@ class AivenCloud(BaseModel):
     geo_region: str
     provider: str
     provider_description: str
+
+    def as_point(self) -> Point:
+        return Point(
+            latitude=self.geo_latitude,
+            longitude=self.geo_longitude,
+        )
 
 # @dataclass
 class AivenError(BaseModel):
