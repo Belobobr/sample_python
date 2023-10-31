@@ -3,9 +3,7 @@ import { Cloud, CloudFilter as CloudFilterEntity, CloudSort as CloudSortEntity }
 import { api, ApiErrors, hasApiErrors } from '../../api';
 
 function CloudRow({ cloud }: { cloud: Cloud }) {
-  const { cloud_name, geo_region, cloud_description, geo_latitude, geo_longitude, provider, provider_description } =
-    cloud;
-
+  const { cloud_name, geo_region, cloud_description, geo_latitude, geo_longitude, provider, provider_description } = cloud;
   return (
     <tr>
       <td>{cloud_name}</td>

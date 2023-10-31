@@ -1,7 +1,7 @@
-from external_services.clouds import get_aiven_clouds
+from external_services.clouds import ExternalServices
 
 def test_aiven_clouds():
-    response = get_aiven_clouds()
+    response = ExternalServices().get_clouds()
     
     assert response.status == 200
     assert response.body.errors == None
