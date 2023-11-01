@@ -80,6 +80,14 @@ def test_when_user_requests_clouds_with_filter_by_provider_should_return_filtere
     ).dict()
 
 
+# caching options?
+# - cache all clouds, compute distance on the fly
+# - create tile map of the world, 
+# compute distance between tiles once, 
+# map clouds to tiles, 
+# compute closest clouds for every tile,
+# store closest clouds for every tile in cache
+
 def test_when_user_requests_clouds_with_sort_by_closest_to_user_should_return_sorted_list(
     client_with_fixed_clouds: TestClient, 
     clouds: List[AivenCloud],
@@ -116,6 +124,7 @@ def get_clouds_sorted_by_closest_to_user(user_point: Point, clouds: List[AivenCl
             cloud.as_point()
         )
     )
+
 
 def is_valid(json_object: Dict, class_name: type[pydantic.BaseModel]):
     try:
