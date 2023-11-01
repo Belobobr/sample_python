@@ -6,7 +6,7 @@ from typing import List, Dict
 from config import get_config
 from server import create_application, provide_dependencies_graph
 from dependencies import ApplicationDependenciesGraph
-from external_api.clouds import AivenCloud, ExternalServices, Result, AivenClouds
+from external_api.clouds import AivenCloud, ExternalApi, Result, AivenClouds
 from routes.clouds import create_clouds_router, create_cloud_router_dependencies
 from schemas.clouds import SearchCloudsResponse, SearchCloudsRequest, CloudRequestFilter, CloudRequestSort
 from fixtures.clouds import clouds, azure_cloud, upcloud_cloud, google_cloud, do_cloud, aws_cloud
@@ -18,7 +18,7 @@ def application_dependencies_graph(clouds: List[AivenCloud]) -> ApplicationDepen
     test_application_dependencies_graph = provide_dependencies_graph(config)
 
     # override clouds router
-    class MockExternalServices(ExternalServices):
+    class MockExternalServices(ExternalApi):
         def get_clouds(self) -> List[AivenCloud]:
             return Result(
                 status=200,

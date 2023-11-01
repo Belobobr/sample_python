@@ -42,7 +42,7 @@ class Result(Generic[T]):
 # TODO
 # add caching (in memory)
 # add circuit breaker
-class ExternalServices:
+class ExternalApi:
     def __init__(self):
         pass
 
@@ -63,5 +63,5 @@ class ExternalServices:
             )
         )
 
-def create_external_services() -> ExternalServices:
-    return ExternalServices()
+def create_external_services() -> ExternalApi:
+    return ExternalApi()

@@ -3,19 +3,19 @@ from fastapi import APIRouter, HTTPException
 
 from config import Config
 from schemas.clouds import SearchCloudsRequest, SearchCloudsResponse
-from external_api.clouds import ExternalServices
+from external_api.clouds import ExternalApi
 
 logger = logging.getLogger(__name__)
 
 class CloudRouterDependencies:
-    def __init__(self, external_services: ExternalServices):
+    def __init__(self, external_services: ExternalApi):
         self.external_services = external_services
 
-    external_services: ExternalServices
+    external_services: ExternalApi
 
 def create_cloud_router_dependencies(
         config: Config, 
-        external_services: ExternalServices
+        external_services: ExternalApi
 ) -> CloudRouterDependencies:
     return CloudRouterDependencies(
         external_services=external_services,
