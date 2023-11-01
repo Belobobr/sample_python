@@ -1,4 +1,4 @@
-from external_api.clouds import ExternalApi
+from external_api.index import ExternalApi
 
 def test_aiven_clouds():
     response = ExternalApi().get_clouds()

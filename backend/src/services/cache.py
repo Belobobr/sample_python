@@ -28,16 +28,26 @@ async def get_clouds():
             print(f"ext_create external_call_in_progress_condition resed")
     else:
         print(f"ext_cache cache already exists")
-        return cache['clouds']
+
+    return cache['clouds']
     
 
 # i want this value to be called only once i
 # if it returnes 200 then we should cache it, following requests should receive value from cache.
 # if it return 503 next calling client should call it again
+
+external_service_call_count = 0
+
 async def get_clouds_from_external_service():
+    global external_service_call_count
+    external_service_call_count += 1
+
     print(f'get_clouds_from_external_service')
-    await asyncio.sleep(5)
-    return []
+    await asyncio.sleep(1)
+    if external_service_call_count == 1:
+        return None
+
+    return [{"name": "aws"}, {"name": "gcp"}]
 
 # When we request clouds and third party is down, we should return 503
 # When third party is up again, we should return 200
@@ -52,9 +62,13 @@ async def main():
     tasks_1 = [asyncio.create_task(get_clouds()) for i in range(5)]
     await asyncio.sleep(1)
     tasks_2 = [asyncio.create_task(get_clouds()) for i in range(5)]
-    await asyncio.sleep(5)
+    await asyncio.sleep(1)
     tasks_3 = [asyncio.create_task(get_clouds()) for i in range(5)]
 
     _ = await asyncio.wait(tasks_3)
+
+    print([str(task.result()) for task in tasks_1])
+    print([str(task.result()) for task in tasks_2])
+    print([str(task.result()) for task in tasks_3])
 
 asyncio.run(main())

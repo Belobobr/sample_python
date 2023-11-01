@@ -2,7 +2,7 @@
 from fastapi import APIRouter
 from routes.health import create_health_router
 from routes.clouds import create_clouds_router, create_cloud_router_dependencies
-from external_api.clouds import ExternalApi
+from external_api.index import ExternalApi
 from config import Config
 
 class ApplicationDependenciesGraph:

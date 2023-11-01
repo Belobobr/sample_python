@@ -3,7 +3,7 @@ from fastapi import APIRouter, HTTPException
 
 from config import Config
 from schemas.clouds import SearchCloudsRequest, SearchCloudsResponse
-from external_api.clouds import ExternalApi
+from external_api.index import ExternalApi
 
 logger = logging.getLogger(__name__)
 
@@ -26,6 +26,8 @@ def create_clouds_router(config: Config, dependencies=CloudRouterDependencies):
     async def search_clouds(
         search_request: SearchCloudsRequest,
     ) -> SearchCloudsResponse:
+        # 
+
         result = dependencies.external_services.get_clouds()
 
         if result.status == 200 and result.body.errors is None:
