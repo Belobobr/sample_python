@@ -3,7 +3,7 @@ from fastapi import APIRouter, HTTPException
 
 from config import Config
 from schemas.clouds import SearchCloudsRequest, SearchCloudsResponse
-from external_services.clouds import ExternalServices
+from external_api.clouds import ExternalServices
 
 logger = logging.getLogger(__name__)
 

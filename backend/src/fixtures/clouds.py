@@ -1,7 +1,7 @@
 import pytest
 from typing import List
 
-from external_services.clouds import AivenCloud
+from external_api.clouds import AivenCloud
 
 @pytest.fixture(name="azure_cloud")
 def azure_cloud() -> AivenCloud:
