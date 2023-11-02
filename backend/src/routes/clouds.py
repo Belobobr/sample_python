@@ -3,22 +3,21 @@ from fastapi import APIRouter, HTTPException
 
 from config import Config
 from schemas.clouds import SearchCloudsRequest, SearchCloudsResponse
-from external_api.index import ExternalApi
+from services.cloud import CloudsService
 
 logger = logging.getLogger(__name__)
 
 class CloudRouterDependencies:
-    def __init__(self, external_services: ExternalApi):
-        self.external_services = external_services
-
-    external_services: ExternalApi
+    def __init__(self, cloud_service: CloudsService):
+        self.cloud_service = cloud_service
+    cloud_service: CloudsService
 
 def create_cloud_router_dependencies(
         config: Config, 
-        external_services: ExternalApi
+        cloud_service: CloudsService
 ) -> CloudRouterDependencies:
     return CloudRouterDependencies(
-        external_services=external_services,
+        cloud_service=cloud_service,
     )
 
 def create_clouds_router(config: Config, dependencies=CloudRouterDependencies):
@@ -28,11 +27,11 @@ def create_clouds_router(config: Config, dependencies=CloudRouterDependencies):
     ) -> SearchCloudsResponse:
         # 
 
-        result = dependencies.external_services.get_clouds()
+        result = dependencies.cloud_service.get_clouds()
 
-        if result.status == 200 and result.body.errors is None:
+        if result is not None:
             return SearchCloudsResponse(
-                clouds=result.body.clouds
+                clouds=result.clouds
             )
 
         raise HTTPException(status_code=503, detail="Service is unavailable") 
