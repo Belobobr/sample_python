@@ -81,12 +81,38 @@ from geo.geo import Point, get_distance_between_two_points
 #     response = conn.getresponse()
 #     assert response.status == 200
 
+# @pytest.fixture
+# def clouds_body(clouds: List[AivenCloud]) -> AivenClouds:
+#     return AivenClouds(
+#         clouds=clouds
+#     )
+
+# @pytest.fixture
+# def mock_http_client_with_clouds(clouds_body):
+#     mock_response = Mock()
+#     mock_response.status = 200
+#     mock_response.read.return_value = json.dumps(clouds_body.dict()).encode()
+#     with patch.object(http.client.HTTPConnection, 'getresponse', return_value=mock_response):
+#         yield
+
+# @pytest.mark.usefixtures('mock_http_client_with_clouds')
+# def test_my_function(clouds_body: AivenClouds):
+#     conn = http.client.HTTPConnection("example.com")
+#     conn.request("GET", "/")
+#     response = conn.getresponse()
+#     assert response.status == 200
+
+#     response_body = json.loads(response.read().decode())
+#     response_body_formatted = AivenClouds(
+#         **response_body
+#     )
+#     assert response_body_formatted == clouds_body
+
 @pytest.fixture
 def clouds_body(clouds: List[AivenCloud]) -> AivenClouds:
     return AivenClouds(
         clouds=clouds
     )
-
 
 @pytest.fixture
 def mock_http_client_with_clouds(clouds_body):
@@ -96,46 +122,79 @@ def mock_http_client_with_clouds(clouds_body):
     with patch.object(http.client.HTTPConnection, 'getresponse', return_value=mock_response):
         yield
 
-@pytest.mark.usefixtures('mock_http_client_with_clouds')
-def test_my_function(clouds_body: AivenClouds):
-    conn = http.client.HTTPConnection("example.com")
-    conn.request("GET", "/")
-    response = conn.getresponse()
-    assert response.status == 200
+# @pytest.mark.usefixtures('mock_http_client_with_clouds')
+# def test_my_function(clouds_body: AivenClouds):
+#     conn = http.client.HTTPConnection("example.com")
+#     conn.request("GET", "/")
+#     response = conn.getresponse()
+#     assert response.status == 200
 
-    response_body = json.loads(response.read().decode())
-    response_body_formatted = AivenClouds(
-        **response_body
-    )
-    assert response_body_formatted == clouds_body
+#     response_body = json.loads(response.read().decode())
+#     response_body_formatted = AivenClouds(
+#         **response_body
+#     )
+#     assert response_body_formatted == clouds_body
 
 
+# @pytest.fixture(name="application_dependencies_graph")
+# def application_dependencies_graph(clouds: List[AivenCloud]) -> ApplicationDependenciesGraph:
+#     config = get_config()
+#     test_application_dependencies_graph = provide_dependencies_graph(config)
+
+#     # override clouds router
+#     class MockExternalServices(ExternalApi):
+#         def get_clouds(self) -> List[AivenCloud]:
+#             return Result(
+#                 status=200,
+#                 body=AivenClouds(
+#                     clouds=clouds
+#                 )
+#             )
+
+#     clouds_router = create_clouds_router(
+#         config, 
+#         dependencies=create_cloud_router_dependencies(
+#             config, 
+#             external_services=MockExternalServices()
+#         )
+#     )
+#     test_application_dependencies_graph.clouds_router = clouds_router
+#     #
+
+#     return test_application_dependencies_graph
+
+
+# @pytest.fixture(name="application_dependencies_graph")
+# def application_dependencies_graph(clouds: List[AivenCloud]) -> ApplicationDependenciesGraph:
+#     config = get_config()
+#     test_application_dependencies_graph = provide_dependencies_graph(config)
+
+#     # override clouds router
+#     class MockExternalServices(ExternalApi):
+#         def get_clouds(self) -> List[AivenCloud]:
+#             return Result(
+#                 status=200,
+#                 body=AivenClouds(
+#                     clouds=clouds
+#                 )
+#             )
+
+#     clouds_router = create_clouds_router(
+#         config, 
+#         dependencies=create_cloud_router_dependencies(
+#             config, 
+#             external_services=MockExternalServices()
+#         )
+#     )
+#     test_application_dependencies_graph.clouds_router = clouds_router
+#     #
+
+#     return test_application_dependencies_graph
 
 @pytest.fixture(name="application_dependencies_graph")
-def application_dependencies_graph(clouds: List[AivenCloud]) -> ApplicationDependenciesGraph:
+def application_dependencies_graph() -> ApplicationDependenciesGraph:
     config = get_config()
     test_application_dependencies_graph = provide_dependencies_graph(config)
-
-    # override clouds router
-    class MockExternalServices(ExternalApi):
-        def get_clouds(self) -> List[AivenCloud]:
-            return Result(
-                status=200,
-                body=AivenClouds(
-                    clouds=clouds
-                )
-            )
-
-    clouds_router = create_clouds_router(
-        config, 
-        dependencies=create_cloud_router_dependencies(
-            config, 
-            external_services=MockExternalServices()
-        )
-    )
-    test_application_dependencies_graph.clouds_router = clouds_router
-    #
-
     return test_application_dependencies_graph
 
 
@@ -145,6 +204,7 @@ def client_with_fixed_clouds(application_dependencies_graph: ApplicationDependen
     return TestClient(app)
 
 
+@pytest.mark.usefixtures('mock_http_client_with_clouds')
 def test_when_user_requests_clouds_without_filters_should_return_whole_list(
     client_with_fixed_clouds: TestClient, 
     clouds: List[AivenCloud]
