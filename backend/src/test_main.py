@@ -218,6 +218,7 @@ def test_when_user_requests_clouds_without_filters_should_return_whole_list(
     assert response.json() == SearchCloudsResponse(clouds=clouds).dict()
 
 
+@pytest.mark.usefixtures('mock_http_client_with_clouds')
 def test_when_user_requests_clouds_with_filter_by_provider_should_return_filtered_list(
     client_with_fixed_clouds: TestClient, 
     clouds: List[AivenCloud],
@@ -248,6 +249,7 @@ def test_when_user_requests_clouds_with_filter_by_provider_should_return_filtere
 # compute closest clouds for every tile,
 # store closest clouds for every tile in cache
 
+@pytest.mark.usefixtures('mock_http_client_with_clouds')
 def test_when_user_requests_clouds_with_sort_by_closest_to_user_should_return_sorted_list(
     client_with_fixed_clouds: TestClient, 
     clouds: List[AivenCloud],

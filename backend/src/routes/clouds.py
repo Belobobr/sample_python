@@ -27,12 +27,10 @@ def create_clouds_router(config: Config, dependencies=CloudRouterDependencies):
     ) -> SearchCloudsResponse:
         # 
 
-        result = dependencies.cloud_service.get_clouds()
+        result = dependencies.cloud_service.search_clouds(search_request)
 
         if result is not None:
-            return SearchCloudsResponse(
-                clouds=result.clouds
-            )
+            return result
 
         raise HTTPException(status_code=503, detail="Service is unavailable") 
 

@@ -1,8 +1,10 @@
 import asyncio
-from typing import Optional
+from typing import Optional, List
 
 from external_api.index import ExternalApi
-from external_api.clouds import AivenClouds
+from external_api.clouds import AivenClouds, AivenCloud
+from schemas.clouds import SearchCloudsRequest, SearchCloudsResponse
+from geo.geo import get_distance_between_two_points, Point
 
 # should be singleton
 class CloudsService:
@@ -44,5 +46,31 @@ class CloudsService:
 
         return self.cached_clouds
     
-    def search_clouds(self):
-        pass
+    def search_clouds(self, search_clouds_request: SearchCloudsRequest) -> Optional[SearchCloudsResponse]:
+        clouds_response = self.get_clouds()
+
+        if clouds_response == None:
+            return None
+        
+        clouds = clouds_response.clouds
+        if search_clouds_request.filter is not None:
+            clouds = [cloud for cloud in clouds if cloud.provider == search_clouds_request.filter.provider]
+
+        if search_clouds_request.sort is not None:
+            clouds = self.sort_clouds_by_closest_to_user(search_clouds_request.sort.as_point(), clouds)
+
+        return SearchCloudsResponse(
+            clouds=clouds,
+            errors=clouds_response.errors,
+            message=clouds_response.message,
+        )
+
+    def sort_clouds_by_closest_to_user(self, user_point: Point, clouds: List[AivenCloud]) -> List[AivenCloud]:
+        return sorted(
+            clouds,
+            key=lambda cloud: get_distance_between_two_points(
+                user_point,
+                cloud.as_point()
+            )
+        )
+        
