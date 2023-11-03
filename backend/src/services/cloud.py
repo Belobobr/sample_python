@@ -15,9 +15,6 @@ class CloudsService:
         self.external_api = external_api
         self.cached_clouds = None
         self.get_clouds_from_external_service_in_progress_condition = None
-
-    # def get_aiven_clouds(self) -> Result[AivenClouds]:
-    #     return get_aiven_clouds()
     
     async def get_clouds(self) -> Optional[AivenClouds]:
         try:
@@ -28,15 +25,13 @@ class CloudsService:
         except Exception as e:
             return None
         
+    # cache eviction policy
     async def get_clouds_cached(self) -> Optional[AivenClouds]:
         if self.cached_clouds is None:
             if self.get_clouds_from_external_service_in_progress_condition:
-                # print(f"ext_wait self.get_clouds_from_external_service_in_progress_condition, let's wait")
                 async with self.get_clouds_from_external_service_in_progress_condition:
                     await self.get_clouds_from_external_service_in_progress_condition.wait()
-                # print(f"ext_wait self.get_clouds_from_external_service_in_progress_condition, finished waiting")
             else:
-                # print(f"ext_create self.get_clouds_from_external_service_in_progress_condition not in progress, let's call")
                 self.get_clouds_from_external_service_in_progress_condition = asyncio.Condition()
                 clouds = await self.get_clouds()
                 self.cached_clouds = clouds
@@ -73,4 +68,6 @@ class CloudsService:
                 cloud.as_point()
             )
         )
+    
+
         

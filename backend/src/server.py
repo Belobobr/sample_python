@@ -36,3 +36,8 @@ if __name__ == "__main__":
 # TODO 
 # add observability
 # add json logging
+# add performance metrics
+# add cache eviction policy
+# add different caching strategy (based on tiles)
+
+# clean structure for api and backend, rely on tests during refactoring
