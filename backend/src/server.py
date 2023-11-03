@@ -4,7 +4,7 @@ import sys
 from fastapi import FastAPI, APIRouter
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-from dependencies import provide_dependencies_graph, ApplicationDependenciesGraph
+from dependencies import ApplicationDependenciesGraph
 
 logging.basicConfig(
     level=logging.INFO,
@@ -38,11 +38,12 @@ def create_application(application_dependencies_graph: ApplicationDependenciesGr
     return application
 
 # TODO 
-# add observability
-# add json logging
-# add performance metrics
-# add cache eviction policy, cache error policy
+# add json logging +
 
+# add performance metrics
+# add observability
+
+# add cache eviction policy, cache error policy
 # add different caching strategy (based on tiles)
 
 # clean structure for api and backend, rely on tests during refactoring

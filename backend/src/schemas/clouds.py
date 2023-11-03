@@ -4,9 +4,6 @@ from typing import Optional
 from external_api.clouds import AivenClouds
 from geo.geo import Point
 
-class SortField(StrEnum):
-    DISTANCE_FROM_USER = "distance_from_user"
-
 class CloudRequestFilter(BaseModel):
     provider: str
 
