@@ -1,3 +1,4 @@
+import logging
 import asyncio
 from typing import Optional, List
 
@@ -5,6 +6,8 @@ from external_api.index import ExternalApi
 from external_api.clouds import AivenClouds, AivenCloud
 from schemas.clouds import SearchCloudsRequest, SearchCloudsResponse
 from geo.geo import get_distance_between_two_points, Point
+
+logger = logging.getLogger(__name__)
 
 # should be singleton
 class CloudsService:
@@ -28,10 +31,14 @@ class CloudsService:
     # cache eviction policy
     async def get_clouds_cached(self) -> Optional[AivenClouds]:
         if self.cached_clouds is None:
+            logger.info(f"clouds are not in cache")
+
             if self.get_clouds_from_external_service_in_progress_condition:
+                logger.info(f"wait for receiving clouds from external service")
                 async with self.get_clouds_from_external_service_in_progress_condition:
                     await self.get_clouds_from_external_service_in_progress_condition.wait()
             else:
+                logger.info(f"receive clouds from external service")
                 self.get_clouds_from_external_service_in_progress_condition = asyncio.Condition()
                 clouds = await self.get_clouds()
                 self.cached_clouds = clouds
@@ -39,9 +46,12 @@ class CloudsService:
                     self.get_clouds_from_external_service_in_progress_condition.notify_all()
                 self.get_clouds_from_external_service_in_progress_condition = None
 
-        return self.cached_clouds
+            return self.cached_clouds
+        else:
+            logger.info(f"clouds are in cache")
+            return self.cached_clouds
     
-    async def search_clouds(self, search_clouds_request: SearchCloudsRequest) -> Optional[SearchCloudsResponse]:
+    async def search_clouds(self, search_clouds_request: SearchCloudsRequest) -> Optional[SearchCloudsResponse]:    
         clouds_response = await self.get_clouds_cached()
 
         if clouds_response == None:
@@ -49,11 +59,14 @@ class CloudsService:
         
         clouds = clouds_response.clouds
         if search_clouds_request.filter is not None:
+            logger.info(f"filter clouds for request {search_clouds_request}")
             clouds = [cloud for cloud in clouds if cloud.provider == search_clouds_request.filter.provider]
 
         if search_clouds_request.sort is not None:
+            logger.info(f"sort clouds for request {search_clouds_request}")
             clouds = self.sort_clouds_by_closest_to_user(search_clouds_request.sort.as_point(), clouds)
 
+        logger.info(f"return clouds for request {search_clouds_request}")
         return SearchCloudsResponse(
             clouds=clouds,
             errors=clouds_response.errors,

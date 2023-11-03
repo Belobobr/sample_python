@@ -1,8 +1,18 @@
+import logging
+import sys
+
 from fastapi import FastAPI, APIRouter
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from dependencies import provide_dependencies_graph, ApplicationDependenciesGraph
-from config import get_config, Config
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.StreamHandler(sys.stdout)
+    ]
+)
 
 async def validation_exception_handler(request, exc):
     error_messages = []
@@ -27,17 +37,12 @@ def create_application(application_dependencies_graph: ApplicationDependenciesGr
     application.add_exception_handler(RequestValidationError, validation_exception_handler)
     return application
 
-app = None
-if __name__ == "__main__":
-    config = get_config()
-    application_dependencies_graph = provide_dependencies_graph(config)
-    app = create_application(application_dependencies_graph)
-
 # TODO 
 # add observability
 # add json logging
 # add performance metrics
-# add cache eviction policy
+# add cache eviction policy, cache error policy
+
 # add different caching strategy (based on tiles)
 
 # clean structure for api and backend, rely on tests during refactoring

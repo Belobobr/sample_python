@@ -25,8 +25,6 @@ def create_clouds_router(config: Config, dependencies=CloudRouterDependencies):
     async def search_clouds(
         search_request: SearchCloudsRequest,
     ) -> SearchCloudsResponse:
-        # 
-
         result = await dependencies.cloud_service.search_clouds(search_request)
 
         if result is not None:
