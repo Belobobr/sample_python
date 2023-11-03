@@ -19,7 +19,7 @@ class CloudsService:
     # def get_aiven_clouds(self) -> Result[AivenClouds]:
     #     return get_aiven_clouds()
     
-    def get_clouds(self) -> Optional[AivenClouds]:
+    async def get_clouds(self) -> Optional[AivenClouds]:
         try:
             result = self.external_api.get_clouds()
             if result.status == 200:
@@ -46,8 +46,8 @@ class CloudsService:
 
         return self.cached_clouds
     
-    def search_clouds(self, search_clouds_request: SearchCloudsRequest) -> Optional[SearchCloudsResponse]:
-        clouds_response = self.get_clouds()
+    async def search_clouds(self, search_clouds_request: SearchCloudsRequest) -> Optional[SearchCloudsResponse]:
+        clouds_response = await self.get_clouds_cached()
 
         if clouds_response == None:
             return None
