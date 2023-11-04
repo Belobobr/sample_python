@@ -1,5 +1,5 @@
 from typing import Optional
-from peformance.locustfile import HttpUser, task, between
+from locust import HttpUser, task, between
 
 # class CloudRequestFilter():
 #     provider: str

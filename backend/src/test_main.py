@@ -287,7 +287,6 @@ def get_clouds_sorted_by_closest_to_user(user_point: Point, clouds: List[AivenCl
         )
     )
 
-
 def is_valid(json_object: Dict, class_name: type[pydantic.BaseModel]):
     try:
         class_name(**json_object)
