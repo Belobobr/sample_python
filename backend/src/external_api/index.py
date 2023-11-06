@@ -18,7 +18,6 @@ class ExternalApi:
         conn = http.client.HTTPSConnection("api.aiven.io")
         conn.request("GET", "/v1/clouds")
         response = conn.getresponse()
-        # return response
 
         respone_body = json.loads(response.read().decode())
         return Result(
@@ -27,6 +26,3 @@ class ExternalApi:
                 **respone_body
             )
         )
-
-# def create_external_services() -> ExternalApi:
-#     return ExternalApi()

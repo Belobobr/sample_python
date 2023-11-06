@@ -10,6 +10,14 @@ from geo.geo import get_distance_between_two_points, Point
 logger = logging.getLogger(__name__)
 
 # should be singleton
+
+# caching options
+# - cache all clouds, compute distance on the fly
+# - create tile map of the world, 
+# compute distance between tiles once, 
+# map clouds to tiles, 
+# compute closest clouds for every tile,
+# store closest clouds for every tile in cache
 class CloudsService:
     external_api: ExternalApi
     cached_clouds: Optional[AivenClouds]

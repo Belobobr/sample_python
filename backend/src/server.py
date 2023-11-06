@@ -22,8 +22,8 @@ async def validation_exception_handler(request, exc):
             "field": field,
             "message": error["msg"]
         })
-
     return JSONResponse(status_code=422, content={"errors": error_messages})
+
 
 def create_application(application_dependencies_graph: ApplicationDependenciesGraph) -> FastAPI:
     application = FastAPI()
@@ -37,13 +37,8 @@ def create_application(application_dependencies_graph: ApplicationDependenciesGr
     application.add_exception_handler(RequestValidationError, validation_exception_handler)
     return application
 
-# TODO 
-# add json logging +
-
-# add performance metrics
-# add observability
-
-# add cache eviction policy, cache error policy
-# add different caching strategy (based on tiles)
-
-# clean structure for api and backend, rely on tests during refactoring
+# TODO
+# observability
+# cache eviction policy, cache error policy
+# check different caching strategy (based on tiles)
+# clean structure for api and backend

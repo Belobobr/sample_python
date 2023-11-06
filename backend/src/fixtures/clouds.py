@@ -66,7 +66,6 @@ def aws_cloud() -> AivenCloud:
 
 @pytest.fixture(name="clouds")
 def clouds(azure_cloud, upcloud_cloud, google_cloud, do_cloud, aws_cloud) -> List[AivenCloud]:
-    # azure', 'upcloud', 'google', 'do', 'aws'
     return [
         azure_cloud,
         upcloud_cloud,

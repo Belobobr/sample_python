@@ -1,4 +1,3 @@
-from enum import StrEnum
 from pydantic import BaseModel
 from typing import Optional
 from external_api.clouds import AivenClouds
