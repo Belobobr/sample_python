@@ -2,7 +2,7 @@ from typing import List, Optional
 from pydantic import BaseModel
 from geo.geo import Point
 
-class AivenCloud(BaseModel):
+class Cloud(BaseModel):
     cloud_description: str
     cloud_name: str
     geo_latitude: int
@@ -23,7 +23,7 @@ class AivenError(BaseModel):
     status: int
 
 class AivenClouds(BaseModel):
-    clouds: List[AivenCloud]
+    clouds: List[Cloud]
     errors: Optional[List[AivenError]] = None
     message: Optional[str] = None
 

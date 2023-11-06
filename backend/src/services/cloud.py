@@ -3,7 +3,7 @@ import asyncio
 from typing import Optional, List
 
 from external_api.index import ExternalApi
-from external_api.clouds import AivenClouds, AivenCloud
+from entities.clouds import AivenClouds, Cloud
 from schemas.clouds import SearchCloudsRequest, SearchCloudsResponse
 from geo.geo import get_distance_between_two_points, Point
 
@@ -81,7 +81,7 @@ class CloudsService:
             message=clouds_response.message,
         )
 
-    def sort_clouds_by_closest_to_user(self, user_point: Point, clouds: List[AivenCloud]) -> List[AivenCloud]:
+    def sort_clouds_by_closest_to_user(self, user_point: Point, clouds: List[Cloud]) -> List[Cloud]:
         return sorted(
             clouds,
             key=lambda cloud: get_distance_between_two_points(

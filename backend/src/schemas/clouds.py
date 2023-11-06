@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
-from external_api.clouds import AivenClouds
+from entities.clouds import AivenClouds
 from geo.geo import Point
 
 class CloudRequestFilter(BaseModel):

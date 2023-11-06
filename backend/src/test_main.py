@@ -7,7 +7,7 @@ import pydantic
 import pytest
 from config import get_config
 from dependencies import ApplicationDependenciesGraph, provide_dependencies_graph
-from external_api.clouds import AivenCloud, AivenClouds
+from entities.clouds import Cloud, AivenClouds
 from fastapi.testclient import TestClient
 from fixtures.clouds import (aws_cloud, azure_cloud, clouds, do_cloud,
                              google_cloud, upcloud_cloud)
@@ -18,7 +18,7 @@ from server import create_application
 
 
 @pytest.fixture
-def clouds_body(clouds: List[AivenCloud]) -> AivenClouds:
+def clouds_body(clouds: List[Cloud]) -> AivenClouds:
     return AivenClouds(
         clouds=clouds
     )
@@ -47,7 +47,7 @@ def client_with_fixed_clouds(application_dependencies_graph: ApplicationDependen
 @pytest.mark.usefixtures('mock_http_client_with_clouds')
 def test_when_user_requests_clouds_without_filters_should_return_whole_list(
     client_with_fixed_clouds: TestClient, 
-    clouds: List[AivenCloud]
+    clouds: List[Cloud]
 ):
     response = client_with_fixed_clouds.post(
         "/api/clouds:search", 
@@ -61,8 +61,8 @@ def test_when_user_requests_clouds_without_filters_should_return_whole_list(
 @pytest.mark.usefixtures('mock_http_client_with_clouds')
 def test_when_user_requests_clouds_with_filter_by_provider_should_return_filtered_list(
     client_with_fixed_clouds: TestClient, 
-    clouds: List[AivenCloud],
-    upcloud_cloud: AivenCloud
+    clouds: List[Cloud],
+    upcloud_cloud: Cloud
 ):
     response = client_with_fixed_clouds.post(
         "/api/clouds:search", 
@@ -83,7 +83,7 @@ def test_when_user_requests_clouds_with_filter_by_provider_should_return_filtere
 @pytest.mark.usefixtures('mock_http_client_with_clouds')
 def test_when_user_requests_clouds_with_sort_by_closest_to_user_should_return_sorted_list(
     client_with_fixed_clouds: TestClient, 
-    clouds: List[AivenCloud],
+    clouds: List[Cloud],
 ):
     user_location = Point(
         latitude=2,
@@ -109,7 +109,7 @@ def test_when_user_requests_clouds_with_sort_by_closest_to_user_should_return_so
     ).dict()
 
 
-def get_clouds_sorted_by_closest_to_user(user_point: Point, clouds: List[AivenCloud]) -> List[AivenCloud]:
+def get_clouds_sorted_by_closest_to_user(user_point: Point, clouds: List[Cloud]) -> List[Cloud]:
     return sorted(
         clouds,
         key=lambda cloud: get_distance_between_two_points(

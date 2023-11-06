@@ -1,11 +1,11 @@
 import pytest
 from typing import List
 
-from external_api.clouds import AivenCloud
+from entities.clouds import Cloud
 
 @pytest.fixture(name="azure_cloud")
-def azure_cloud() -> AivenCloud:
-    return AivenCloud(
+def azure_cloud() -> Cloud:
+    return Cloud(
         cloud_description="Azure",
         cloud_name="azure-south-africa-north",
         geo_latitude=-25,
@@ -16,8 +16,8 @@ def azure_cloud() -> AivenCloud:
     )
 
 @pytest.fixture(name="upcloud_cloud")
-def upcloud_cloud() -> AivenCloud:
-    return AivenCloud(
+def upcloud_cloud() -> Cloud:
+    return Cloud(
         cloud_description="Asia, Singapore - UpCloud: Singapore",
         cloud_name="upcloud-sg-sin",
         geo_latitude=1,
@@ -28,8 +28,8 @@ def upcloud_cloud() -> AivenCloud:
     )
 
 @pytest.fixture(name="google_cloud")
-def google_cloud() -> AivenCloud:
-    return AivenCloud(
+def google_cloud() -> Cloud:
+    return Cloud(
         cloud_description="Asia, Hong Kong - Google Cloud: Hong Kong",
         cloud_name="google-asia-east2",
         geo_latitude=22,
@@ -40,8 +40,8 @@ def google_cloud() -> AivenCloud:
     )
 
 @pytest.fixture(name="do_cloud")
-def do_cloud() -> AivenCloud:
-    return AivenCloud(
+def do_cloud() -> Cloud:
+    return Cloud(
         cloud_description="Asia, India - DigitalOcean: Bangalore",
         cloud_name="do-blr",
         geo_latitude=12,
@@ -52,8 +52,8 @@ def do_cloud() -> AivenCloud:
     )
 
 @pytest.fixture(name="aws_cloud")
-def aws_cloud() -> AivenCloud:
-    return AivenCloud(
+def aws_cloud() -> Cloud:
+    return Cloud(
         cloud_description="Africa, South Africa - Amazon Web Services: Cape Town",
         cloud_name="aws-af-south-1",
         geo_latitude=-33,
@@ -65,7 +65,7 @@ def aws_cloud() -> AivenCloud:
 
 
 @pytest.fixture(name="clouds")
-def clouds(azure_cloud, upcloud_cloud, google_cloud, do_cloud, aws_cloud) -> List[AivenCloud]:
+def clouds(azure_cloud, upcloud_cloud, google_cloud, do_cloud, aws_cloud) -> List[Cloud]:
     return [
         azure_cloud,
         upcloud_cloud,
