@@ -3,8 +3,8 @@ import logging
 from typing import List, Optional
 
 from api.external import ExternalApi
-from api.payload import AivenClouds, SearchCloudsResponse
-from entities.clouds import Cloud, SearchCloudsRequest
+from api.payload import BodyClouds
+from entities.clouds import Cloud, SearchClouds
 from geo.geo import Point, get_distance_between_two_points
 
 logger = logging.getLogger(__name__)
@@ -20,14 +20,14 @@ logger = logging.getLogger(__name__)
 # store closest clouds for every tile in cache
 class CloudsService:
     external_api: ExternalApi
-    cached_clouds: Optional[AivenClouds]
+    cached_clouds: Optional[BodyClouds]
 
     def __init__(self, external_api: ExternalApi):
         self.external_api = external_api
         self.cached_clouds = None
         self.get_clouds_from_external_service_in_progress_condition = None
     
-    async def get_clouds(self) -> Optional[AivenClouds]:
+    async def get_clouds(self) -> Optional[BodyClouds]:
         try:
             result = self.external_api.get_clouds()
             if result.status == 200:
@@ -37,7 +37,7 @@ class CloudsService:
             return None
         
     # cache eviction policy
-    async def get_clouds_cached(self) -> Optional[AivenClouds]:
+    async def get_clouds_cached(self) -> Optional[BodyClouds]:
         if self.cached_clouds is None:
             logger.info(f"clouds are not in cache")
 
@@ -59,7 +59,7 @@ class CloudsService:
             logger.info(f"clouds are in cache")
             return self.cached_clouds
     
-    async def search_clouds(self, search_clouds_request: SearchCloudsRequest) -> Optional[SearchCloudsResponse]:    
+    async def search_clouds(self, search_clouds_request: SearchClouds) -> Optional[BodyClouds]:    
         clouds_response = await self.get_clouds_cached()
 
         if clouds_response == None:
@@ -75,7 +75,7 @@ class CloudsService:
             clouds = self.sort_clouds_by_closest_to_user(search_clouds_request.sort.as_point(), clouds)
 
         logger.info(f"return clouds for request {search_clouds_request}")
-        return SearchCloudsResponse(
+        return BodyClouds(
             clouds=clouds,
             errors=clouds_response.errors,
             message=clouds_response.message,

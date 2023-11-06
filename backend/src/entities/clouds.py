@@ -17,10 +17,10 @@ class Cloud(BaseModel):
             longitude=self.geo_longitude,
         )
     
-class CloudRequestFilter(BaseModel):
+class SearchCloudsFilter(BaseModel):
     provider: str
 
-class CloudRequestSort(BaseModel):
+class SearchCloudsSort(BaseModel):
     user_geo_latitude: float
     user_geo_longitude: float
 
@@ -30,7 +30,7 @@ class CloudRequestSort(BaseModel):
             longitude=self.user_geo_longitude,
         )
 
-class SearchCloudsRequest(BaseModel):
-    filter: Optional[CloudRequestFilter]
-    sort: Optional[CloudRequestSort]
+class SearchClouds(BaseModel):
+    filter: Optional[SearchCloudsFilter]
+    sort: Optional[SearchCloudsSort]
 

@@ -1,8 +1,8 @@
 import logging
 
-from api.payload import SearchCloudsResponse
+from api.payload import BodyClouds
 from config import Config
-from entities.clouds import SearchCloudsRequest
+from entities.clouds import SearchClouds
 from fastapi import APIRouter, HTTPException
 from services.cloud import CloudsService
 
@@ -24,8 +24,8 @@ def create_cloud_router_dependencies(
 def create_clouds_router(config: Config, dependencies=CloudRouterDependencies):
 
     async def search_clouds(
-        search_request: SearchCloudsRequest,
-    ) -> SearchCloudsResponse:
+        search_request: SearchClouds,
+    ) -> BodyClouds:
         result = await dependencies.cloud_service.search_clouds(search_request)
 
         if result is not None:
@@ -36,6 +36,6 @@ def create_clouds_router(config: Config, dependencies=CloudRouterDependencies):
     router = APIRouter()
     router.post(
         "/clouds:search",
-        response_model=SearchCloudsResponse,
+        response_model=BodyClouds,
     )(search_clouds)
     return router

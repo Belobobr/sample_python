@@ -5,12 +5,12 @@ from unittest.mock import Mock, patch
 
 import pydantic
 import pytest
-from api.payload import AivenClouds, SearchCloudsResponse
+from api.payload import BodyClouds
 from config import get_config
 from dependencies import (ApplicationDependenciesGraph,
                           provide_dependencies_graph)
-from entities.clouds import (Cloud, CloudRequestFilter, CloudRequestSort,
-                             SearchCloudsRequest)
+from entities.clouds import (Cloud, SearchCloudsFilter, SearchCloudsSort,
+                             SearchClouds)
 from fastapi.testclient import TestClient
 from fixtures.clouds import (aws_cloud, azure_cloud, clouds, do_cloud,
                              google_cloud, upcloud_cloud)
@@ -19,8 +19,8 @@ from server import create_application
 
 
 @pytest.fixture
-def clouds_body(clouds: List[Cloud]) -> AivenClouds:
-    return AivenClouds(
+def clouds_body(clouds: List[Cloud]) -> BodyClouds:
+    return BodyClouds(
         clouds=clouds
     )
 
@@ -52,11 +52,11 @@ def test_when_user_requests_clouds_without_filters_should_return_whole_list(
 ):
     response = client_with_fixed_clouds.post(
         "/api/clouds:search", 
-        json=SearchCloudsRequest().dict()
+        json=SearchClouds().dict()
     )
     
     assert response.status_code == 200
-    assert response.json() == SearchCloudsResponse(clouds=clouds).dict()
+    assert response.json() == BodyClouds(clouds=clouds).dict()
 
 
 @pytest.mark.usefixtures('mock_http_client_with_clouds')
@@ -67,15 +67,15 @@ def test_when_user_requests_clouds_with_filter_by_provider_should_return_filtere
 ):
     response = client_with_fixed_clouds.post(
         "/api/clouds:search", 
-        json=SearchCloudsRequest(
-            filter=CloudRequestFilter(
+        json=SearchClouds(
+            filter=SearchCloudsFilter(
                 provider="upcloud"
             )
         ).dict()
     )
     
     assert response.status_code == 200
-    assert response.json() == SearchCloudsResponse(
+    assert response.json() == BodyClouds(
         clouds=[
             upcloud_cloud,
         ]
@@ -93,8 +93,8 @@ def test_when_user_requests_clouds_with_sort_by_closest_to_user_should_return_so
 
     response = client_with_fixed_clouds.post(
         "/api/clouds:search", 
-        json=SearchCloudsRequest(
-            sort=CloudRequestSort(
+        json=SearchClouds(
+            sort=SearchCloudsSort(
                 user_geo_latitude=user_location.latitude,
                 user_geo_longitude=user_location.longitude
             )
@@ -105,7 +105,7 @@ def test_when_user_requests_clouds_with_sort_by_closest_to_user_should_return_so
 
     clouds_sorted_by_closest_to_user = get_clouds_sorted_by_closest_to_user(user_location, clouds)
 
-    assert response.json() == SearchCloudsResponse(
+    assert response.json() == BodyClouds(
         clouds=clouds_sorted_by_closest_to_user
     ).dict()
 

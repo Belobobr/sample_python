@@ -1,7 +1,7 @@
 import http.client
 import json
 from typing import TypeVar, Generic
-from api.payload import AivenClouds
+from api.payload import BodyClouds
 
 
 T = TypeVar('T')  
@@ -15,7 +15,7 @@ class ExternalApi:
         pass
     
     # throws exceptions
-    def get_clouds(self) -> Result[AivenClouds]:
+    def get_clouds(self) -> Result[BodyClouds]:
         conn = http.client.HTTPSConnection("api.aiven.io")
         conn.request("GET", "/v1/clouds")
         response = conn.getresponse()
@@ -23,7 +23,7 @@ class ExternalApi:
         respone_body = json.loads(response.read().decode())
         return Result(
             response.status, 
-            AivenClouds(
+            BodyClouds(
                 **respone_body
             )
         )
