@@ -1,7 +1,8 @@
 import http.client
 import json
 from typing import TypeVar, Generic
-from entities.clouds import AivenClouds
+from api.payload import AivenClouds
+
 
 T = TypeVar('T')  
 class Result(Generic[T]):

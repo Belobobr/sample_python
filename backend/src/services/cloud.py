@@ -2,8 +2,9 @@ import logging
 import asyncio
 from typing import Optional, List
 
-from external_api.index import ExternalApi
-from entities.clouds import AivenClouds, Cloud
+from api.external import ExternalApi
+from entities.clouds import Cloud
+from api.payload import AivenClouds
 from schemas.clouds import SearchCloudsRequest, SearchCloudsResponse
 from geo.geo import get_distance_between_two_points, Point
 

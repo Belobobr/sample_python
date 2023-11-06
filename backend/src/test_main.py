@@ -7,7 +7,8 @@ import pydantic
 import pytest
 from config import get_config
 from dependencies import ApplicationDependenciesGraph, provide_dependencies_graph
-from entities.clouds import Cloud, AivenClouds
+from entities.clouds import Cloud
+from api.payload import AivenClouds
 from fastapi.testclient import TestClient
 from fixtures.clouds import (aws_cloud, azure_cloud, clouds, do_cloud,
                              google_cloud, upcloud_cloud)

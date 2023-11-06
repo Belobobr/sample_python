@@ -1,4 +1,3 @@
-from typing import List, Optional
 from pydantic import BaseModel
 from geo.geo import Point
 
@@ -16,15 +15,4 @@ class Cloud(BaseModel):
             latitude=self.geo_latitude,
             longitude=self.geo_longitude,
         )
-
-class AivenError(BaseModel):
-    message: str
-    more_info: str
-    status: int
-
-class AivenClouds(BaseModel):
-    clouds: List[Cloud]
-    errors: Optional[List[AivenError]] = None
-    message: Optional[str] = None
-
 
