@@ -49,7 +49,6 @@ export { makeRequestWithErrorsHandling, hasApiErrors };
 
 export type { ApiResult, ApiErrors };
 
-//TODO all catch should use this
 function getErrorMessage(error: unknown) {
   if (error instanceof Error) return error.message;
   return String(error);

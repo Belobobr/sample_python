@@ -16,6 +16,6 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    sort: { user_geo_latitude: 0, user_geo_longitude: 0 },
+    sort: { user_geo_latitude: undefined, user_geo_longitude: undefined },
   },
 };

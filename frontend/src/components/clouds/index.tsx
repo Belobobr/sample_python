@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { Cloud, CloudFilter as CloudFilterEntity, CloudSort as CloudSortEntity } from '../../entities';
 import { api, ApiErrors, hasApiErrors } from '../../api';
+import { isNullOrEmpty } from '../../utils/strings';
 
 function CloudRow({ cloud }: { cloud: Cloud }) {
-  const { cloud_name, geo_region, cloud_description, geo_latitude, geo_longitude, provider, provider_description } = cloud;
+  const { cloud_name, geo_region, cloud_description, geo_latitude, geo_longitude, provider, provider_description } =
+    cloud;
   return (
     <tr>
       <td>{cloud_name}</td>
@@ -61,7 +63,7 @@ function CloudFilter({
   );
 }
 
-function CloudSort({ sort, onSortChange }: { sort: CloudSortEntity; onSortChange: (sort: CloudSortEntity) => void }) {
+function CloudSort({ sort, onSortChange }: { sort: SortForm; onSortChange: (sort: SortForm) => void }) {
   return (
     <>
       <label>
@@ -71,7 +73,7 @@ function CloudSort({ sort, onSortChange }: { sort: CloudSortEntity; onSortChange
           placeholder=""
           value={sort.user_geo_latitude}
           onChange={(e) => {
-            onSortChange({ ...sort, user_geo_latitude: parseFloat(e.target.value) });
+            onSortChange({ ...sort, user_geo_latitude: e.target.value });
           }}
           data-testid={'sortUserGeoLatitudeInput'}
         />
@@ -83,7 +85,7 @@ function CloudSort({ sort, onSortChange }: { sort: CloudSortEntity; onSortChange
           placeholder=""
           value={sort.user_geo_longitude}
           onChange={(e) => {
-            onSortChange({ ...sort, user_geo_longitude: parseFloat(e.target.value) });
+            onSortChange({ ...sort, user_geo_longitude: e.target.value });
           }}
           data-testid={'sortUserGeoLongitudeInput'}
         />
@@ -100,8 +102,8 @@ function CloudSortAndFilter({
   onSearchPress,
 }: {
   filter: CloudFilterEntity;
-  sort: CloudSortEntity;
-  onSortChange: (sort: CloudSortEntity) => void;
+  sort: SortForm;
+  onSortChange: (sort: SortForm) => void;
   onFilterChange: (filter: CloudFilterEntity) => void;
   onSearchPress: () => void;
 }) {
@@ -149,8 +151,8 @@ function FilterableAndSortableCloudTable({
 }: {
   clouds: Cloud[];
   filter: CloudFilterEntity;
-  sort: CloudSortEntity;
-  onSortChange: (sort: CloudSortEntity) => void;
+  sort: SortForm;
+  onSortChange: (sort: SortForm) => void;
   onFilterChange: (filter: CloudFilterEntity) => void;
   onSearchPress: () => void;
   loading: boolean;
@@ -179,23 +181,53 @@ function FilterableAndSortableCloudTable({
   );
 }
 
+interface SortForm {
+  user_geo_latitude?: string;
+  user_geo_longitude?: string;
+}
+
+function parseFloatOrUndefined(str: string) {
+  const value = parseFloat(str);
+  return isNaN(value) ? undefined : value;
+}
+
+function getSortEntityFromSortForm(form: SortForm): CloudSortEntity | undefined {
+  const user_geo_latitude = parseFloatOrUndefined(form.user_geo_latitude || '');
+  const user_geo_longitude = parseFloatOrUndefined(form.user_geo_longitude || '');
+
+  if (user_geo_latitude == undefined || user_geo_longitude == undefined) {
+    return undefined;
+  }
+
+  return {
+    user_geo_latitude,
+    user_geo_longitude,
+  };
+}
+
+// TODO
+// useReducer
+// use something for working with forms like formik
+
 function FilterableAndSortableCloudTableContainer() {
   const [filter, setFilter] = useState<CloudFilterEntity>({
     provider: '',
   });
-  const [sort, setSort] = useState<CloudSortEntity>({
-    // user_geo_latitude: 0,
-    // user_geo_longitude: 0,
-  });
+  const [sort, setSort] = useState<SortForm>({});
 
-  //TODO useReducer if it's easier to understand
   const [loading, setLoading] = useState<boolean>(false);
   const [clouds, setClouds] = useState<Cloud[]>([]);
   const [errors, setErrors] = useState<ApiErrors>({});
 
   const searchClouds = async () => {
     setLoading(true);
-    const { errors, result: clouds } = await api.searchClouds({ filter, sort });
+
+    const searchFilter = isNullOrEmpty(filter.provider) ? undefined : filter;
+
+    const { errors, result: clouds } = await api.searchClouds({
+      filter: searchFilter,
+      sort: getSortEntityFromSortForm(sort),
+    });
     setErrors(errors);
     setClouds(clouds);
     setLoading(false);

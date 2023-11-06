@@ -2,6 +2,7 @@ import logging
 import sys
 
 from fastapi import FastAPI, APIRouter
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from dependencies import ApplicationDependenciesGraph
@@ -28,6 +29,17 @@ async def validation_exception_handler(request, exc):
 def create_application(application_dependencies_graph: ApplicationDependenciesGraph) -> FastAPI:
     application = FastAPI()
 
+    origins = [
+        "http://localhost:3000",
+    ]
+    application.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
     api_router = APIRouter()
     api_router.include_router(application_dependencies_graph.health_router)
     api_router.include_router(application_dependencies_graph.clouds_router)
@@ -36,9 +48,3 @@ def create_application(application_dependencies_graph: ApplicationDependenciesGr
 
     application.add_exception_handler(RequestValidationError, validation_exception_handler)
     return application
-
-# TODO
-# observability
-# cache eviction policy, cache error policy
-# check different caching strategy (based on tiles)
-# clean structure for api and backend

@@ -29,9 +29,8 @@ export const Default: Story = {
   },
 };
 
-// TODO check how to reuse
 export const SearchSuccess: Story = {
-  play: async ({ args, canvasElement, step }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step('Enter filter', async () => {
@@ -59,7 +58,7 @@ const successSearchResponse = new SearchCloudsResponseBody(cloudsAllFields, unde
 SearchSuccess.parameters = {
   msw: {
     handlers: [
-      rest.post('http://localhost:8080/api/clouds:search', (req, res, ctx) => {
+      rest.post('http://localhost:8000/api/clouds:search', (req, res, ctx) => {
         return res(ctx.json(successSearchResponse));
       }),
     ],
@@ -67,7 +66,7 @@ SearchSuccess.parameters = {
 };
 
 export const SearchFailure: Story = {
-  play: async ({ args, canvasElement, step }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step('Enter filter', async () => {
@@ -97,7 +96,7 @@ const errorSearchResponse = new SearchCloudsResponseBody(
 SearchFailure.parameters = {
   msw: {
     handlers: [
-      rest.post('http://localhost:8080/api/clouds:search', (req, res, ctx) => {
+      rest.post('http://localhost:8000/api/clouds:search', (req, res, ctx) => {
         return res(ctx.status(412), ctx.json(errorSearchResponse));
       }),
     ],

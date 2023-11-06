@@ -32,7 +32,7 @@ export const All: Story = {
   args: {
     clouds: cloudsAllFields,
     filter: { provider: 'aws' },
-    sort: { user_geo_latitude: 0, user_geo_longitude: 0 },
+    sort: { user_geo_latitude: undefined, user_geo_longitude: undefined },
     loading: false,
     errors: {},
   },
@@ -42,7 +42,7 @@ export const ContentLoading: Story = {
   args: {
     clouds: cloudsAllFields,
     filter: { provider: 'aws' },
-    sort: { user_geo_latitude: 0, user_geo_longitude: 0 },
+    sort: { user_geo_latitude: undefined, user_geo_longitude: undefined },
     loading: true,
     errors: {},
   },
@@ -52,7 +52,7 @@ export const ContentError: Story = {
   args: {
     clouds: cloudsAllFields,
     filter: { provider: 'aws' },
-    sort: { user_geo_latitude: 0, user_geo_longitude: 0 },
+    sort: { user_geo_latitude: undefined, user_geo_longitude: undefined },
     loading: false,
     errors: {
       serverErrors: [
