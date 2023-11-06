@@ -1,8 +1,9 @@
 import logging
-from fastapi import APIRouter, HTTPException
 
+from api.payload import SearchCloudsResponse
 from config import Config
-from schemas.clouds import SearchCloudsRequest, SearchCloudsResponse
+from entities.clouds import SearchCloudsRequest
+from fastapi import APIRouter, HTTPException
 from services.cloud import CloudsService
 
 logger = logging.getLogger(__name__)

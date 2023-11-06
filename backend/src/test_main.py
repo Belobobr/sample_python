@@ -5,16 +5,16 @@ from unittest.mock import Mock, patch
 
 import pydantic
 import pytest
+from api.payload import AivenClouds, SearchCloudsResponse
 from config import get_config
-from dependencies import ApplicationDependenciesGraph, provide_dependencies_graph
-from entities.clouds import Cloud
-from api.payload import AivenClouds
+from dependencies import (ApplicationDependenciesGraph,
+                          provide_dependencies_graph)
+from entities.clouds import (Cloud, CloudRequestFilter, CloudRequestSort,
+                             SearchCloudsRequest)
 from fastapi.testclient import TestClient
 from fixtures.clouds import (aws_cloud, azure_cloud, clouds, do_cloud,
                              google_cloud, upcloud_cloud)
 from geo.geo import Point, get_distance_between_two_points
-from schemas.clouds import (CloudRequestFilter, CloudRequestSort,
-                            SearchCloudsRequest, SearchCloudsResponse)
 from server import create_application
 
 
